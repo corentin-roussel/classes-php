@@ -1,8 +1,18 @@
 <?php
-    require_once("_db/connect.php");
-    require_once("User.php")
-?>
+    include 'User.php';
 
+    if(!empty($_POST)) {
+        extract($_POST);
+
+        if(isset($_POST['connexion'])) {
+            $login = htmlspecialchars(trim($login));
+            $mdp = htmlspecialchars(trim($mdp));
+            echo($user->connect($login, $mdp));
+            
+        }
+        var_dump($_SESSION);
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,21 +30,7 @@
             <label for="mdp">Mot de passe :</label>
             <input type="password" name="mdp" id="mdp">
 
-            <input type="submit" name="inscription" value="Se connecter"></br>
-
-            <?php
-                if(!empty($_POST)) {
-                    extract($_POST);
-
-                    if(isset($_POST['inscription'])) {
-                        $login = htmlspecialchars(trim($login));
-                        $mdp = htmlspecialchars(trim($mdp));
-
-                        echo($user->connect($login, $mdp));
-                    }
-                    var_dump($_SESSION);
-                }
-            ?>
+            <input type="submit" name="connexion" value="Se connecter"></br>
         </form>
     </main>
 </body>
