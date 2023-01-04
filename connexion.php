@@ -7,7 +7,7 @@
         if(isset($_POST['connexion'])) {
             $login = htmlspecialchars(trim($login));
             $mdp = htmlspecialchars(trim($mdp));
-            echo($user->connect($login, $mdp));
+            $user->connect($login, $mdp);
             
         }
         var_dump($_SESSION);

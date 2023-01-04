@@ -1,12 +1,13 @@
 <?php
     include("User.php");
 
+
     if(isset($_POST['disconnect'])) {
         $user->disconnect();
     }
 
     if($user->isConnected()) {
-        echo " Bienvenue " .$_SESSION['login'] . ".";
+        echo " Bienvenue " .$_SESSION['user']->login . ".";
     }
 
     if(isset($_POST['delete'])) {

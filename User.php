@@ -10,10 +10,18 @@
         public $email;
         public $firstname;
         public $lastname;
+        public $mdp;
 
 
-        public function __construct() {
+        public function __construct($id, $login, $mdp, $email, $firstname, $lastname) {
             $this->connect = mysqli_connect('localhost', 'root', '', 'classes');
+
+            $this->id = $id;
+            $this->login = $login;
+            $this->mdp = $mdp;
+            $this->email = $email;
+            $this->firstname = $firstname;
+            $this->lastname = $lastname;
         }
 
         public function checkpassword ($mdp) {
@@ -63,12 +71,15 @@
             if(mysqli_num_rows($req) == 1) {
                 $info = mysqli_fetch_assoc($req);
                 if(password_verify($mdp, $info['password'])) {
-                    $_SESSION['id'] = $info['id'];
-                    $_SESSION['login'] = $info['login'];
-                    $_SESSION['firstname'] = $info['firstname'];
-                    $_SESSION['lastname'] = $info['lastname'];
-                    $_SESSION['password'] = $info['password'];
-                    $_SESSION['email'] = $info['email'];
+                    $user = new User($info['id'], $info['login'], $info['password'], $info['email'], $info['lastname'], $info['firstname']);
+                    $_SESSION['user'] =  $user;
+
+                    // $_SESSION['id'] = $info['id'];
+                    // $_SESSION['login'] = $info['login'];
+                    // $_SESSION['firstname'] = $info['firstname'];
+                    // $_SESSION['lastname'] = $info['lastname'];
+                    // $_SESSION['password'] = $info['password'];
+                    // $_SESSION['email'] = $info['email'];
                     header("location: accueil.php");
 
                 }else {
@@ -86,13 +97,13 @@
         }
 
         public function isConnected() {
-            if($_SESSION['login']) {
+            if($_SESSION['user']) {
                 return true;
             }
         }
 
         public function delete() {
-            $sessionID = $_SESSION['id'];
+            $sessionID = $_SESSION['user']->id;
 
             $del = $this->connect->query ("DELETE FROM `utilisateurs` WHERE id = $sessionID ");
             $this->disconnect();
@@ -167,7 +178,7 @@
         public function getAllInfos() {
             $this->connect;
 
-            $req = mysqli_query($this->connect, "SELECT * FROM `utilisateurs` WHERE id = {$_SESSION['id']} ");
+            $req = mysqli_query($this->connect, "SELECT * FROM `utilisateurs` WHERE id = {$_SESSION['user']->id} ");
             $req = mysqli_fetch_assoc($req);
 
             return  <<<HTML
@@ -197,35 +208,39 @@
         public function getLogin() {
             $this->connect;
 
-            $req = mysqli_query($this->connect, "SELECT * FROM `utilisateurs` WHERE id = {$_SESSION['id']} ");
+            $req = mysqli_query($this->connect, "SELECT * FROM `utilisateurs` WHERE id = {$_SESSION['user']->id} ");
             $req = mysqli_fetch_assoc($req);
 
             return "Le login est : " . $req['login'];
         }
+
         public function getEmail() {
             $this->connect;
 
-            $req = mysqli_query($this->connect, "SELECT * FROM `utilisateurs` WHERE id = {$_SESSION['id']} ");
+            $req = mysqli_query($this->connect, "SELECT * FROM `utilisateurs` WHERE id = {$_SESSION['user']->id} ");
             $req = mysqli_fetch_assoc($req);
 
             return "L'e-mail est : " . $req['email'];
         }
+
         public function getFirstname() {
             $this->connect;
 
-            $req = mysqli_query($this->connect, "SELECT * FROM `utilisateurs` WHERE id = {$_SESSION['id']} ");
+            $req = mysqli_query($this->connect, "SELECT * FROM `utilisateurs` WHERE id = {$_SESSION['user']->id} ");
             $req = mysqli_fetch_assoc($req);
 
             return "Le prénom est : " . $req['firstname'];
         }
+
         public function getLastname() {
             $this->connect;
 
-            $req = mysqli_query($this->connect, "SELECT * FROM `utilisateurs` WHERE id = {$_SESSION['id']} ");
+            $req = mysqli_query($this->connect, "SELECT * FROM `utilisateurs` WHERE id = {$_SESSION['user']->id} ");
             $req = mysqli_fetch_assoc($req);
 
             return "Le nom est : " .$req['lastname'];
         }
+        
     }
-    $user = new User();
+    $user = new User($id = NULL, $login = NULL, $mdp = NULL, $email = NULL, $firstname = NULL, $lastname = NULL);
 ?>
