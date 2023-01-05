@@ -74,6 +74,7 @@
                     $user = new User($info['id'], $info['login'], $info['password'], $info['email'], $info['lastname'], $info['firstname']);
                     $_SESSION['user'] =  $user;
 
+
                     // $_SESSION['id'] = $info['id'];
                     // $_SESSION['login'] = $info['login'];
                     // $_SESSION['firstname'] = $info['firstname'];
@@ -97,7 +98,7 @@
         }
 
         public function isConnected() {
-            if($_SESSION['user']) {
+            if($_SESSION) {
                 return true;
             }
         }
@@ -107,16 +108,15 @@
 
             $del = $this->connect->query ("DELETE FROM `utilisateurs` WHERE id = $sessionID ");
             $this->disconnect();
-            header("location: inscription.php");
         }        
 
         public function update($login, $email, $newmdp, $confmdp, $oldmdp) {
             $valid = TRUE;
-            $sessionLogin = $_SESSION['login'];
+            $sessionLogin = $_SESSION['user']->login;
 
-            if(password_verify($oldmdp, $_SESSION['password'])) {
+            if(password_verify($oldmdp, $_SESSION['user']->mdp)) {
 
-                if($login != $_SESSION['login']) {
+                if($login != $_SESSION['user']->login) {
                     $req = ("SELECT login FROM utilisateurs WHERE login = '$login'");
                     $verif = mysqli_query($this->connect, $req);
 
@@ -125,7 +125,7 @@
                         $err_login = "Ce login est déja pris";
                     }
 
-                }else if($login === $_SESSION['login']) {
+                }else if($login == $_SESSION['user']->login) {
                     $valid = FALSE;
                     $err_login = "Le login $login est déja pris.";
                 }else if(grapheme_strlen($login) < 5) { 
@@ -137,7 +137,7 @@
                     $err_login = "Le login doit contenir maximum 25 caractéres."; 
                 }
 
-                if($email != $_SESSION['email']) {
+                if($email != $_SESSION['user']->email) {
                     $req = ("SELECT email FROM utilisateurs WHERE email = '$email'");
                     $verif = mysqli_query($this->connect, $req);
 
@@ -149,27 +149,29 @@
 
                 if($newmdp != $confmdp) {
                     $valid = FALSE;
-                    echo "La confirmation du mot de passe n'est pas bonne";
+                    return "La confirmation du mot de passe n'est pas bonne";
                     
                 }else if($this->checkpassword($newmdp)) {
                     $crypt_password = password_hash($newmdp, PASSWORD_DEFAULT);
                 }else {
                     $valid = FALSE;
-                    echo "Le mot de passe doit contenir cinq carcatéres minimum avec au moins une majuscule, une minuscule, un chiffre et un caractére spéciale";
+                    return "Le mot de passe doit contenir cinq carcatéres minimum avec au moins une majuscule, une minuscule, un chiffre et un caractére spéciale";
                 }
 
                 if($valid) {
                     $req = ("UPDATE utilisateurs SET login = '$login', password = '$crypt_password', email = '$email' WHERE login = '$sessionLogin'");
                     $change = mysqli_query($this->connect, $req);
 
-                    echo "changement réussi";
+                    $this->disconnect();
+
+                    return "changement réussi";
 
                 }
                 
 
             }else {
                 $valid = FALSE;
-                echo "L'ancien mot de passe n'est pas correct";
+                return "L'ancien mot de passe n'est pas correct";
             }
 
             

@@ -1,5 +1,5 @@
 <?php
-    include 'User.php';
+    include 'User-pdo.php';
 
     if(!empty($_POST)) {
         extract($_POST);
@@ -10,7 +10,7 @@
             $user->connect($login, $mdp);
             
         }
-        var_dump($_SESSION);
+
     }
 ?>
 <!DOCTYPE html>
@@ -22,6 +22,7 @@
 <title>Connexion</title>
 </head>
 <body>
+    <?php require_once "header.php"; ?>
     <main>
         <form action="" method="POST">
             <label for="login">Login :</label>

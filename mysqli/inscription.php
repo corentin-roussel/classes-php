@@ -1,5 +1,6 @@
 <?php
-    include("User.php");
+    include ("User.php");
+    require_once "header.php";
 
     if(!empty($_POST)) {
         extract($_POST);
@@ -40,6 +41,7 @@
 <title>Inscription</title>
 </head>
 <body>
+    <?php require_once "../header.php"; ?>
     <main>
         <form action="" method="POST">
 

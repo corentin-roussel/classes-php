@@ -1,14 +1,10 @@
 <?php
     include "User.php";
+    require_once "header.php";
 
-    var_dump($_SESSION['user']);
+    
 
-    echo $user->getAllInfos() . "</br>" ;
 
-    echo $user->getLogin() . "</br>";
-    echo $user->getEmail() . "</br>";
-    echo $user->getLastname() . "</br>";
-    echo $user->getFirstname() . "</br>";
 
     if(!empty($_POST)) {
         extract($_POST);
@@ -23,6 +19,12 @@
             $user->update($login, $email, $newmdp, $confmdp, $oldmdp);
         }
     }
+    echo $user->getAllInfos() . "</br>" ;
+
+    echo $user->getLogin() . "</br>";
+    echo $user->getEmail() . "</br>";
+    echo $user->getLastname() . "</br>";
+    echo $user->getFirstname() . "</br>";
 ?>
 
 <!DOCTYPE html>
@@ -33,6 +35,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Inscription</title>
     </head>
+    <?php require_once "../header.php"; ?>
     <body>
         <main>
             <form action="" method="POST">
