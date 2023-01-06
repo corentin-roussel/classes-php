@@ -44,6 +44,7 @@
                 <label for="email">E-mail :</label>
                 <input type="email" name="email" id="email" value="<?php echo $_SESSION['email'] ?>">
 
+                <?php echo $user->getErrorMdp(); ?>
                 <label for="newmdp">Nouveau mot de passe :</label>
                 <input type="password" name="newmdp" id="newmdp">
 

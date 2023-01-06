@@ -140,7 +140,6 @@
             $del = $this->connect->prepare ("DELETE FROM `utilisateurs` WHERE id = ? ");
             $del->execute([$sessionID]);
             $this->disconnect();
-            header("location: inscription.php");
         }        
 
         public function update($login, $email, $newmdp, $confmdp, $oldmdp) {
